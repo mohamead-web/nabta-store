@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter, Routes, Route } from 'react-router-dom';
@@ -7,13 +6,13 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AppProvider } from './context/AppContext';
 import { Toaster } from 'react-hot-toast';
 
-// صفحات الأدمن
+// صفحات الأدمن (لو غيرتها لاحقًا سيبها كما هي الآن)
 import AdminLogin from './pages/AdminLogin';
 import AdminOrders from './pages/AdminOrders';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
-  throw new Error('Could not find root element to mount to');
+  throw new Error("Could not find root element to mount to");
 }
 
 const root = ReactDOM.createRoot(rootElement);
@@ -23,10 +22,9 @@ root.render(
       <AppProvider>
         <HashRouter>
           <Routes>
-            {/* كل الموقع الحالي يبقى داخل App كما هو */}
+            {/* التطبيق الأساسي */}
             <Route path="/*" element={<App />} />
-
-            {/* مسارات المشرف */}
+            {/* الأدمن */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
           </Routes>
@@ -49,4 +47,3 @@ root.render(
     </HelmetProvider>
   </React.StrictMode>
 );
-
