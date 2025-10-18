@@ -1,35 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
+import CrashGuard from './components/CrashGuard';
 import App from './App';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppProvider } from './context/AppContext';
 import { Toaster } from 'react-hot-toast';
 
-// صفحات الأدمن
-import AdminLogin from './pages/AdminLogin';
-import AdminOrders from './pages/AdminOrders';
-
 const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error('Could not find root element to mount to');
-}
+if (!rootElement) throw new Error('Could not find root element to mount to');
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <HelmetProvider>
       <AppProvider>
-        <HashRouter>
-          <Routes>
-            {/* كل الموقع الحالي يبقى داخل App كما هو */}
-            <Route path="/*" element={<App />} />
-
-            {/* مسارات المشرف */}
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/orders" element={<AdminOrders />} />
-          </Routes>
-        </HashRouter>
+        <CrashGuard>
+          <HashRouter>
+            <App />
+          </HashRouter>
+        </CrashGuard>
 
         <Toaster
           position="top-center"
