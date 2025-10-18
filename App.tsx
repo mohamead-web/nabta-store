@@ -1,30 +1,38 @@
+import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 
-import { HashRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import ProductDetails from './pages/ProductDetails';
-import Checkout from './pages/Checkout';
-import OrderSuccess from './pages/OrderSuccess';
-import Contact from './pages/Contact';
-import Policies from './pages/Policies';
-
-function App() {
+function Box({children}:{children:React.ReactNode}) {
   return (
-    <HashRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/product/:slug" element={<ProductDetails />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-success/:code" element={<OrderSuccess />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/policies" element={<Policies />} />
-        </Routes>
-      </Layout>
-    </HashRouter>
+    <div style={{
+      maxWidth: 920, margin: '40px auto', padding: 24,
+      background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.2)',
+      borderRadius: 16, color: '#fff', fontFamily: 'system-ui, sans-serif'
+    }}>
+      {children}
+    </div>
   );
 }
 
-export default App;
+function Home() {
+  return (
+    <Box>
+      <h1 style={{fontSize: 26, marginBottom: 8}}>تشخيص نبتة ✅</h1>
+      <p style={{opacity:.85, marginBottom: 16}}>
+        لو أنت شايف الصفحة دي فالتطبيق ركب بنجاح. المشكلة كانت في أحد المكونات/الاستيرادات.
+      </p>
+      <ul style={{lineHeight: '2'}}>
+        <li><Link to="/" style={{textDecoration:'underline', color:'#c6ffe1'}}>الصفحة الرئيسية</Link></li>
+        <li><a href="#/products" style={{textDecoration:'underline', color:'#c6ffe1'}}>صفحة المنتجات (رابطك الحالي)</a></li>
+        <li><a href="#/admin" style={{textDecoration:'underline', color:'#c6ffe1'}}>صفحة الأدمن</a></li>
+      </ul>
+    </Box>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="*" element={<Home/>} />
+    </Routes>
+  );
+}
