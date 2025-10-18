@@ -1,5 +1,0 @@
-{
-  "name": "Nabta Store",
-  "description": "An Arabic-first e-commerce progressive web app for selling plants and flowers, featuring a Cash on Delivery (COD) system. Built with React, TypeScript, Tailwind CSS, and Supabase for the backend.",
-  "requestFramePermissions": []
-}
