@@ -1,38 +1,162 @@
-import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 
-function Box({children}:{children:React.ReactNode}) {
+/** غلاف خطأ خاص بكل صفحة */
+class PageBoundary extends React.Component<{ children: React.ReactNode }, { error: any }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { error };
+  }
+  componentDidCatch(error: any, info: any) {
+    console.error('Route crashed:', error, info);
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ maxWidth: 920, margin: '40px auto', padding: 24, color: '#fff' }}>
+          <h2 style={{ fontSize: 22, marginBottom: 8 }}>حدث خطأ في هذه الصفحة</h2>
+          <pre style={{ whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,.12)', padding: 12, borderRadius: 8 }}>
+            {String(this.state.error?.message || this.state.error)}
+          </pre>
+          <div style={{ marginTop: 12 }}>
+            <Link to="/" style={{ textDecoration: 'underline', color: '#c6ffe1' }}>الرجوع للصفحة الرئيسية</Link>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children as any;
+  }
+}
+
+/** Fallback أثناء التحميل */
+function Loading() {
   return (
-    <div style={{
-      maxWidth: 920, margin: '40px auto', padding: 24,
-      background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.2)',
-      borderRadius: 16, color: '#fff', fontFamily: 'system-ui, sans-serif'
-    }}>
-      {children}
+    <div style={{ maxWidth: 920, margin: '40px auto', padding: 24, color: '#fff' }}>
+      جاري التحميل…
     </div>
   );
 }
 
-function Home() {
-  return (
-    <Box>
-      <h1 style={{fontSize: 26, marginBottom: 8}}>تشخيص نبتة ✅</h1>
-      <p style={{opacity:.85, marginBottom: 16}}>
-        لو أنت شايف الصفحة دي فالتطبيق ركب بنجاح. المشكلة كانت في أحد المكونات/الاستيرادات.
-      </p>
-      <ul style={{lineHeight: '2'}}>
-        <li><Link to="/" style={{textDecoration:'underline', color:'#c6ffe1'}}>الصفحة الرئيسية</Link></li>
-        <li><a href="#/products" style={{textDecoration:'underline', color:'#c6ffe1'}}>صفحة المنتجات (رابطك الحالي)</a></li>
-        <li><a href="#/admin" style={{textDecoration:'underline', color:'#c6ffe1'}}>صفحة الأدمن</a></li>
-      </ul>
-    </Box>
-  );
+/** safeLazy: لو فشل الاستيراد، يعطي صفحة خطأ بدلاً من كراش */
+function safeLazy<T extends React.ComponentType<any>>(loader: () => Promise<{ default: T }>, name: string) {
+  return lazy(async () => {
+    try {
+      return await loader();
+    } catch (e: any) {
+      console.error(`Failed to load page "${name}"`, e);
+      return {
+        default: (() => (
+          <div style={{ maxWidth: 920, margin: '40px auto', padding: 24, color: '#fff' }}>
+            <h2 style={{ fontSize: 22, marginBottom: 8 }}>تعذر تحميل صفحة: {name}</h2>
+            <pre style={{ whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,.12)', padding: 12, borderRadius: 8 }}>
+              {String(e?.message || e)}
+            </pre>
+            <Link to="/" style={{ textDecoration: 'underline', color: '#c6ffe1' }}>الرجوع للصفحة الرئيسية</Link>
+          </div>
+        )) as T },
+      };
+    }
+  });
 }
+
+/** هنا عرّف صفحاتك (حسب مجلدك pages/) */
+const Home         = safeLazy(() => import('./pages/Home'),           'Home');
+const Products     = safeLazy(() => import('./pages/Products'),       'Products');
+const Product      = safeLazy(() => import('./pages/ProductDetails'), 'ProductDetails');
+const Checkout     = safeLazy(() => import('./pages/Checkout'),       'Checkout');
+const OrderSuccess = safeLazy(() => import('./pages/OrderSuccess'),   'OrderSuccess');
+const Contact      = safeLazy(() => import('./pages/Contact'),        'Contact');
+const Policies     = safeLazy(() => import('./pages/Policies'),       'Policies');
+const Admin        = safeLazy(() => import('./pages/Admin'),          'Admin');
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="*" element={<Home/>} />
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        {/* الرئيسية */}
+        <Route
+          path="/"
+          element={
+            <PageBoundary>
+              <Home />
+            </PageBoundary>
+          }
+        />
+
+        {/* المنتجات */}
+        <Route
+          path="/products"
+          element={
+            <PageBoundary>
+              <Products />
+            </PageBoundary>
+          }
+        />
+
+        {/* تفاصيل منتج */}
+        <Route
+          path="/product/:id"
+          element={
+            <PageBoundary>
+              <Product />
+            </PageBoundary>
+          }
+        />
+
+        {/* السلة/الدفع */}
+        <Route
+          path="/checkout"
+          element={
+            <PageBoundary>
+              <Checkout />
+            </PageBoundary>
+          }
+        />
+
+        {/* نجاح الطلب */}
+        <Route
+          path="/order-success/:code"
+          element={
+            <PageBoundary>
+              <OrderSuccess />
+            </PageBoundary>
+          }
+        />
+
+        {/* تواصل وسياسات */}
+        <Route
+          path="/contact"
+          element={
+            <PageBoundary>
+              <Contact />
+            </PageBoundary>
+          }
+        />
+        <Route
+          path="/policies"
+          element={
+            <PageBoundary>
+              <Policies />
+            </PageBoundary>
+          }
+        />
+
+        {/* الأدمن */}
+        <Route
+          path="/admin"
+          element={
+            <PageBoundary>
+              <Admin />
+            </PageBoundary>
+          }
+        />
+
+        {/* أي مسار آخر */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }
