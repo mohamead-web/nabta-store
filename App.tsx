@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 
-/** غلاف خطأ خاص بكل صفحة */
+/** غلاف خطأ لكل صفحة */
 class PageBoundary extends React.Component<{ children: React.ReactNode }, { error: any }> {
   constructor(props: any) {
     super(props);
@@ -40,29 +40,33 @@ function Loading() {
   );
 }
 
-/** safeLazy: لو فشل الاستيراد، يعطي صفحة خطأ بدلاً من كراش */
-function safeLazy<T extends React.ComponentType<any>>(loader: () => Promise<{ default: T }>, name: string) {
+/** safeLazy: استيراد كسول مع هاندل للأخطاء بدون أقواس زائدة */
+function safeLazy<T extends React.ComponentType<any>>(
+  loader: () => Promise<{ default: T }>,
+  name: string
+) {
   return lazy(async () => {
     try {
       return await loader();
     } catch (e: any) {
       console.error(`Failed to load page "${name}"`, e);
-      return {
-        default: (() => (
-          <div style={{ maxWidth: 920, margin: '40px auto', padding: 24, color: '#fff' }}>
-            <h2 style={{ fontSize: 22, marginBottom: 8 }}>تعذر تحميل صفحة: {name}</h2>
-            <pre style={{ whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,.12)', padding: 12, borderRadius: 8 }}>
-              {String(e?.message || e)}
-            </pre>
-            <Link to="/" style={{ textDecoration: 'underline', color: '#c6ffe1' }}>الرجوع للصفحة الرئيسية</Link>
-          </div>
-        )) as T },
-      };
+      const Fallback = (() => (
+        <div style={{ maxWidth: 920, margin: '40px auto', padding: 24, color: '#fff' }}>
+          <h2 style={{ fontSize: 22, marginBottom: 8 }}>تعذر تحميل صفحة: {name}</h2>
+          <pre style={{ whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,.12)', padding: 12, borderRadius: 8 }}>
+            {String(e?.message || e)}
+          </pre>
+          <Link to="/" style={{ textDecoration: 'underline', color: '#c6ffe1' }}>
+            الرجوع للصفحة الرئيسية
+          </Link>
+        </div>
+      )) as unknown as T;
+      return { default: Fallback };
     }
   });
 }
 
-/** هنا عرّف صفحاتك (حسب مجلدك pages/) */
+/** عرّف الصفحات حسب مجلدك */
 const Home         = safeLazy(() => import('./pages/Home'),           'Home');
 const Products     = safeLazy(() => import('./pages/Products'),       'Products');
 const Product      = safeLazy(() => import('./pages/ProductDetails'), 'ProductDetails');
@@ -76,7 +80,6 @@ export default function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        {/* الرئيسية */}
         <Route
           path="/"
           element={
@@ -85,8 +88,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* المنتجات */}
         <Route
           path="/products"
           element={
@@ -95,8 +96,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* تفاصيل منتج */}
         <Route
           path="/product/:id"
           element={
@@ -105,8 +104,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* السلة/الدفع */}
         <Route
           path="/checkout"
           element={
@@ -115,8 +112,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* نجاح الطلب */}
         <Route
           path="/order-success/:code"
           element={
@@ -125,8 +120,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* تواصل وسياسات */}
         <Route
           path="/contact"
           element={
@@ -143,8 +136,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* الأدمن */}
         <Route
           path="/admin"
           element={
@@ -153,8 +144,6 @@ export default function App() {
             </PageBoundary>
           }
         />
-
-        {/* أي مسار آخر */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
