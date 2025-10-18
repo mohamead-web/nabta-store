@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <head>
@@ -6,30 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- PWA -->
-    <meta name="theme-color" content="#0F5731" />
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <meta name="theme-color" content="#0F5731">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     <link rel="manifest" href="/manifest.json" />
 
     <!-- SEO -->
     <title>متجر نبتة | لبيع النباتات والزهور</title>
     <meta name="description" content="متجر نبتة هو وجهتك الأولى لشراء أجود أنواع النباتات المنزلية والزهور. نوفر خدمة الدفع عند الاستلام والتوصيل السريع. أضف لمسة من الطبيعة إلى منزلك اليوم." />
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://nabta-store.netlify.app/" />
-    <meta property="og:title" content="متجر نبتة | لبيع النباتات والزهور" />
-    <meta property="og:description" content="اكتشف تشكيلة رائعة من النباتات والزهور في متجر نبتة. خدمة الدفع عند الاستلام." />
-    <meta property="og:image" content="https://picsum.photos/seed/nabta-og/1200/630" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nabta-store.netlify.app/">
+    <meta property="og:title" content="متجر نبتة | لبيع النباتات والزهور">
+    <meta property="og:description" content="اكتشف تشكيلة رائعة من النباتات والزهور في متجر نبتة. خدمة الدفع عند الاستلام.">
+    <meta property="og:image" content="https://picsum.photos/seed/nabta-og/1200/630">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://nabta-store.netlify.app/" />
-    <meta property="twitter:title" content="متجر نبتة | لبيع النباتات والزهور" />
-    <meta property="twitter:description" content="اكتشف تشكيلة رائعة من النباتات والزهور في متجر نبتة. خدمة الدفع عند الاستلام." />
-    <meta property="twitter:image" content="https://picsum.photos/seed/nabta-twitter/1200/600" />
-
-    <!-- Responsive tweaks -->
-    <style>
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://nabta-store.netlify.app/">
+    <meta property="twitter:title" content="متجر نبتة | لبيع النباتات والزهور">
+    <meta property="twitter:description" content="اكتشف تشكيلة رائعة من النباتات والزهور في متجر نبتة. خدمة الدفع عند الاستلام.">
+    <meta property="twitter:image" content="https://picsum.photos/seed/nabta-twitter/1200/600">
+<style>
       @media (max-width: 768px) {
         .product-details-grid { grid-template-columns: 1fr !important; }
         .checkout-grid { grid-template-columns: 1fr !important; }
@@ -43,13 +42,12 @@
         }
       }
     </style>
+<link rel="stylesheet" href="/index.css">
 
-    <!-- Tailwind (اختياري) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
   <body class="bg-[#0B3C24] bg-gradient-to-br from-[#0B3C24] to-[#0F5731] text-gray-200">
     <div id="root"></div>
-    <!-- تشغيل التطبيق من ملف الدخول -->
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
