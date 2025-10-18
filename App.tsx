@@ -1,7 +1,7 @@
+// src/App.tsx
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 
-/** غلاف خطأ لكل صفحة */
 class PageBoundary extends React.Component<{ children: React.ReactNode }, { error: any }> {
   constructor(props: any) {
     super(props);
@@ -31,7 +31,6 @@ class PageBoundary extends React.Component<{ children: React.ReactNode }, { erro
   }
 }
 
-/** Fallback أثناء التحميل */
 function Loading() {
   return (
     <div style={{ maxWidth: 920, margin: '40px auto', padding: 24, color: '#fff' }}>
@@ -40,7 +39,6 @@ function Loading() {
   );
 }
 
-/** safeLazy: استيراد كسول مع هاندل للأخطاء بدون أقواس زائدة */
 function safeLazy<T extends React.ComponentType<any>>(
   loader: () => Promise<{ default: T }>,
   name: string
@@ -66,7 +64,6 @@ function safeLazy<T extends React.ComponentType<any>>(
   });
 }
 
-/** عرّف الصفحات حسب مجلدك */
 const Home         = safeLazy(() => import('./pages/Home'),           'Home');
 const Products     = safeLazy(() => import('./pages/Products'),       'Products');
 const Product      = safeLazy(() => import('./pages/ProductDetails'), 'ProductDetails');
@@ -80,70 +77,14 @@ export default function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <PageBoundary>
-              <Home />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/products"
-          element={
-            <PageBoundary>
-              <Products />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/product/:id"
-          element={
-            <PageBoundary>
-              <Product />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/checkout"
-          element={
-            <PageBoundary>
-              <Checkout />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/order-success/:code"
-          element={
-            <PageBoundary>
-              <OrderSuccess />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <PageBoundary>
-              <Contact />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/policies"
-          element={
-            <PageBoundary>
-              <Policies />
-            </PageBoundary>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <PageBoundary>
-              <Admin />
-            </PageBoundary>
-          }
-        />
+        <Route path="/" element={<PageBoundary><Home /></PageBoundary>} />
+        <Route path="/products" element={<PageBoundary><Products /></PageBoundary>} />
+        <Route path="/product/:id" element={<PageBoundary><Product /></PageBoundary>} />
+        <Route path="/checkout" element={<PageBoundary><Checkout /></PageBoundary>} />
+        <Route path="/order-success/:code" element={<PageBoundary><OrderSuccess /></PageBoundary>} />
+        <Route path="/contact" element={<PageBoundary><Contact /></PageBoundary>} />
+        <Route path="/policies" element={<PageBoundary><Policies /></PageBoundary>} />
+        <Route path="/admin" element={<PageBoundary><Admin /></PageBoundary>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
